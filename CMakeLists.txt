@@ -4,12 +4,17 @@ project(wx-pomodoro VERSION 0.1.0)
 include(CTest)
 enable_testing()
 
-## TODO: set to ON if triplet is static
-set(wxWidgets_USE_STATIC ON)
+if(VCPKG_TARGET_TRIPLET MATCHES ".*-static$")
+    set(wxWidgets_USE_STATIC ON)
+endif()
 
 find_package(wxWidgets COMPONENTS core base)
-set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /MT")
-set(CMAKE_CXX_FLAGS_MINSIZEREL "${CMAKE_CXX_FLAGS_MINSIZEREL} /MT")
+
+if(VCPKG_TARGET_TRIPLET MATCHES ".*-static$")
+    set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /MT")
+    set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /MT")
+    set(CMAKE_CXX_FLAGS_MINSIZEREL "${CMAKE_CXX_FLAGS_MINSIZEREL} /MT")
+endif()
 
 add_executable(${PROJECT_NAME} WIN32 src/tomato-app.cpp src/tomato-frame.cpp src/tomato-tray.cpp src/wx-pomodoro.rc)
 
