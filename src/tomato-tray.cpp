@@ -3,12 +3,21 @@
 
 #include "tomato.xpm"
 
-wxBEGIN_EVENT_TABLE(TomatoTray, wxTaskBarIcon)
-  EVT_MENU(PU_START_PAUSE, TomatoTray::OnMenuStartPause)
-  EVT_MENU(PU_RESET,TomatoTray::OnMenuReset)
-  EVT_MENU(PU_EXIT, TomatoTray::OnMenuExit)
-  EVT_TIMER(TIMER_ID, TomatoTray::OnTimer)
-wxEND_EVENT_TABLE()
+#if defined(__WXOSX__) && wxOSX_USE_COCOA
+TomatoTray::TomatoTray(wxTaskBarIconType iconType, wxApp *app) : wxTaskBarIcon(iconType)
+#else
+TomatoTray::TomatoTray(wxApp *app) : timer_(this, TIMER_ID)
+#endif
+{
+  app_ = app;
+  Reset();
+
+  // Bind events using the modern Connect/Bind method
+  Bind(wxEVT_MENU, &TomatoTray::OnMenuStartPause, this, PU_START_PAUSE);
+  Bind(wxEVT_MENU, &TomatoTray::OnMenuReset, this, PU_RESET);
+  Bind(wxEVT_MENU, &TomatoTray::OnMenuExit, this, PU_EXIT);
+  Bind(wxEVT_TIMER, &TomatoTray::OnTimer, this, TIMER_ID);
+}
 
 wxMenu *TomatoTray::CreatePopupMenu()
 {

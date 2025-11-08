@@ -14,14 +14,10 @@ class TomatoTray : public wxTaskBarIcon
 {
 public:
 #if defined(__WXOSX__) && wxOSX_USE_COCOA
-  TomatoTray(wxTaskBarIconType iconType = wxTBI_DEFAULT_TYPE, wxApp *app) : wxTaskBarIcon(iconType)
+  TomatoTray(wxTaskBarIconType iconType = wxTBI_DEFAULT_TYPE, wxApp *app);
 #else
-  TomatoTray(wxApp *app) : timer_(this, TIMER_ID)
+  TomatoTray(wxApp *app);
 #endif
-  {
-    app_ = app;
-    Reset();
-  }
   virtual wxMenu *CreatePopupMenu();
   void OnMenuStartPause(wxCommandEvent&);
   void OnMenuReset(wxCommandEvent&);
@@ -34,5 +30,4 @@ private:
   int elapsed_seconds_;
   void Reset();
   void Update();
-  wxDECLARE_EVENT_TABLE();
 };
